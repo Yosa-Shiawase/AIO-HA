@@ -1,4 +1,4 @@
-/* ============================================================================
+git add -A && git commit -m "fix: real contact + payment details" && git push/* ============================================================================
    AIO-HA INTERNATIONAL — SITE DATA (single source of truth)
    ----------------------------------------------------------------------------
    EDIT THIS FILE to change phone numbers, products, services, reviews,
@@ -12,7 +12,7 @@ window.AIOHA = (function () {
   var PHONE_DISPLAY = "+91 92121 60801";
   var PHONE_TEL = "+919212160801";
   var PHONE_SHOP_DISPLAY = "+91 99901 50611";
-  var WHATSAPP_NUMBER = "919212160801"; // digits only, with country code
+  var WHATSAPP_NUMBER = "+919212160801"; // digits only, with country code
 
   var wa = function (message, utm) {
     var text = encodeURIComponent(message || "Namaste, I need a repair:");

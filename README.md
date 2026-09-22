@@ -25,7 +25,7 @@ Open `http://localhost:4173`.
 ```
 aio-ha/
 ├── index.html                  # landing (all sections)
-├── pages/                      # 10 dossier pages (multi-page + dropdown targets)
+├── pages/                      # 11 dossier pages (multi-page + dropdown targets)
 │   ├── _template.html          # ← page template (edit with care)
 │   ├── laptops.html            # S01
 │   ├── printers.html           # S02
@@ -36,6 +36,7 @@ aio-ha/
 │   ├── products-onyx.html      # P01
 │   ├── products-xpria.html     # P02
 │   ├── products-starlink.html  # P03
+│   ├── contact.html            # contact / job card / map
 │   └── workshop.html           # about / since 2007
 ├── assets/
 │   ├── css/main.css            # design system (all tokens in :root)
@@ -120,6 +121,8 @@ why every button/link consumes `var(--accent)`.
 
 ## NOTES
 
-- Reviews are placeholders — replace before going loud (see above).
-- Photos: the design is intentionally illustration/typography-led. Drop real product
-  photos into `assets/img/` and swap the lineups in `page.js` when available.
+- Reviews are placeholders — replace before going loud (see above).- Photos: drop real product photos into `assets/img/products/` (see
+  `SHOP_PHOTOS` and each page's `photos`/`gallery` arrays in `data.js`).
+  Every frame degrades to a styled product-name plate if a file is
+  missing — never a blank box. Keep each file ≤300KB / ≤1200px wide
+  (`npm run check:images`).

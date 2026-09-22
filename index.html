@@ -120,7 +120,12 @@
     </section>
 
     <!-- ============ 02 MARQUEE ============ -->
-    <section class="marquee" aria-label="What we do" id="marquee-band"></section>
+    <section class="marquee" aria-label="What we do" id="marquee-band">
+      <!-- static chunk so the band renders even with JS disabled; site.js replaces it -->
+      <div class="marquee__track">
+        <div class="marquee__chunk">LAPTOP REPAIR <span class="spark">✦</span> RO PURIFIERS <span class="spark">✦</span> PRINTERS <span class="spark">✦</span> WATER SOFTENERS <span class="spark">✦</span> CHIMNEYS <span class="spark">✦</span> WHOLESALE RATES <span class="spark">✦</span> </div>
+      </div>
+    </section>
 
     <!-- ============ 03 MANIFESTO ============ -->
     <section class="section manifesto wrap" aria-label="Manifesto">
@@ -180,6 +185,7 @@
               <a class="btn btn--lg magnetic lab__cta" id="labCta" href="#" target="_blank" rel="noopener">
                 <span class="btn__fill"></span><span class="btn__txt">ENQUIRE ON WHATSAPP</span>
               </a>
+              <a class="lab__page mono" id="labPage" style="display:none">FULL SPEC →</a>
             </div>
           </div>
         </div>
@@ -216,17 +222,17 @@
     <hr class="cut" aria-hidden="true" /><span class="cut__note">SHEET 07 — BY THE NUMBERS</span>
     <section class="stats" aria-label="By the numbers">
       <div class="stats__grid">
-        <div class="stat"><span class="stat__num"><span data-count="18" data-suffix="+">0+</span></span><span class="stat__label">YEARS ON THE BENCH</span></div>
-        <div class="stat"><span class="stat__num"><span data-count="10000" data-suffix="+">0+</span></span><span class="stat__label">DEVICES SERVICED</span></div>
-        <div class="stat"><span class="stat__num"><span data-count="45" data-suffix="-MIN">0-MIN</span></span><span class="stat__label">AVG RESPONSE</span></div>
-        <div class="stat"><span class="stat__num"><span data-count="4.9" data-decimals="1" data-suffix="★">0.0★</span></span><span class="stat__label">LOCAL RATING</span></div>
+        <div class="stat"><span class="stat__num"><span data-count="18" data-suffix="+">18+</span></span><span class="stat__label">YEARS ON THE BENCH</span></div>
+        <div class="stat"><span class="stat__num"><span data-count="10000" data-suffix="+">10,000+</span></span><span class="stat__label">DEVICES SERVICED</span></div>
+        <div class="stat"><span class="stat__num"><span data-count="45" data-suffix="-MIN">45-MIN</span></span><span class="stat__label">AVG RESPONSE</span></div>
+        <div class="stat"><span class="stat__num"><span data-count="4.9" data-decimals="1" data-suffix="★">4.9★</span></span><span class="stat__label">LOCAL RATING</span></div>
       </div>
     </section>
 
     <!-- ============ 08 REVIEWS ============ -->
     <hr class="cut" aria-hidden="true" /><span class="cut__note">SHEET 08 — JOB CARDS</span>
     <section class="section reviews wrap" aria-label="Customer reviews">
-      <p class="mono" style="color: var(--ink55); margin-bottom: -18px">SERVING BUDH VIHAR · ROHINI · PITAMPURA — REPAIR &amp; RO SERVICE IN NORTH-WEST DELHI</p>
+      <p class="mono" style="color: var(--ink55); margin-bottom: 18px">SERVING BUDH VIHAR · ROHINI · PITAMPURA — REPAIR &amp; RO SERVICE IN NORTH-WEST DELHI</p>
       <div class="section-head">
         <p class="label rv">(04) — JOB CARDS, SIGNED</p>
         <h2 class="display section-title rv">WORD FROM<br />THE WORKSHOP DOOR</h2>
@@ -239,6 +245,17 @@
         <button class="reviews__btn" data-embla-next aria-label="Next review"><i></i><b>→</b></button>
       </div>
       <p class="reviews__hint mono rv">DRAG · SWIPE — REAL NAMES ON REQUEST</p>
+    </section>
+
+    <!-- ============ 08b SHOP — FRONT & INTERIOR ============ -->
+    <hr class="cut" aria-hidden="true" /><span class="cut__note">SHEET 08b — THE SHOP</span>
+    <section class="section shopstrip wrap" id="shop-strip" aria-label="Our shop">
+      <div class="section-head">
+        <p class="label rv">(04b) — THE SHOP</p>
+        <h2 class="display section-title rv">WALK IN.<br />WATER'S ON US.</h2>
+      </div>
+      <div class="photogrid" id="shopPhotos"><!-- frames rendered by home.js --></div>
+      <p class="mono rv" style="color: var(--ink55); margin-top: 16px">BUDH VIHAR PHASE-1 · MANGAL BAZAR ROAD · NEAR BHARAT GAS AGENCY — <a href="pages/contact.html">DIRECTIONS →</a></p>
     </section>
 
     <!-- ============ 09 CONTACT — REPAIR JOB CARD ============ -->

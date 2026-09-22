@@ -1,4 +1,4 @@
-git add -A && git commit -m "fix: real contact + payment details" && git push/* ============================================================================
+/* ============================================================================
    AIO-HA INTERNATIONAL — SITE DATA (single source of truth)
    ----------------------------------------------------------------------------
    EDIT THIS FILE to change phone numbers, products, services, reviews,
@@ -22,6 +22,20 @@ window.AIOHA = (function () {
       "&utm_source=" + src
     );
   };
+
+  /* ---------- 1b. PRODUCT PHOTOGRAPHY (local files only) ----------------- */
+  // Paths are site-root relative; renderers prefix window.AIOHA_ROOT so the
+  // same data works from / and /pages/. Every frame must degrade to a styled
+  // product-name plate if a photo is missing (see data-img onerror handler).
+  var IMG = function (file) {
+    return "assets/img/products/" + file;
+  };
+  var SHOP_PHOTOS = [
+    // TODO(OWNER): save these two from your phone — the Google business photos
+    // are bot-blocked. Until the files exist the frames show the shop name.
+    { src: IMG("shop-front.jpg"), alt: "AIO-HA International shop front, Budh Vihar Phase 1, Delhi" },
+    { src: IMG("interior-1.jpg"), alt: "Inside the AIO-HA International repair workshop and RO counter" }
+  ];
 
   var BUSINESS = {
     name: "AIO-HA International",
@@ -141,8 +155,8 @@ window.AIOHA = (function () {
     },
     {
       label: "CONTACT",
-      type: "anchor",
-      href: "index.html#contact"
+      type: "page",
+      href: "pages/contact.html"
     }
   ];
 
@@ -208,6 +222,8 @@ window.AIOHA = (function () {
       finish: "MYSTIC BLUE",
       type: "Zinc · Copper · Alkaline",
       spec: "LCD indicator · space-saving wall mount",
+      img: IMG("onyx-mystic-blue.jpeg"),
+      alt: "OnyX Mystic Blue RO water purifier",
       accent: "#1F6E7A",
       swatch: "#1F6E7A"
     },
@@ -219,6 +235,8 @@ window.AIOHA = (function () {
       finish: "CLASSY COPPER",
       type: "Zinc · Copper · Alkaline",
       spec: "LCD indicator · space-saving wall mount",
+      img: IMG("onyx-classy-copper.png"),
+      alt: "OnyX Classy Copper RO water purifier",
       accent: "#B4633A",
       swatch: "#B4633A"
     },
@@ -230,6 +248,8 @@ window.AIOHA = (function () {
       finish: "BLACK-SMOKE / BLUE / GREEN",
       type: "Storage purifier · multiple finishes",
       spec: "Electronic display · stainless tap",
+      img: IMG("ro-black-copper-1.png"),
+      alt: "XPRIA storage water purifier in black-copper finish",
       accent: "#0E5A40",
       swatch: "#0E5A40"
     },
@@ -241,6 +261,8 @@ window.AIOHA = (function () {
       finish: "ROSE GOLD (also Green · Purple · Cherry)",
       type: "Slimline RO · 24/36/48 W",
       spec: "419 × 241 × 568 mm · 12 kg",
+      img: IMG("starlink-rose-gold.png"),
+      alt: "STARLINK slimline RO water purifier in rose gold",
       accent: "#C4737F",
       swatch: "#C4737F"
     }
@@ -354,11 +376,21 @@ window.AIOHA = (function () {
         { k: "TURNAROUND", v: "Same-day diagnostics" },
         { k: "SPARES", v: "Genuine, bench-tested" }
       ],
+      pageImg: IMG("ro-undercounter.jpg"),
+      pageImgAlt: "Under-counter RO unit serviced by AIO-HA International",
       jobs: [
         ["Motherboard / chip-level", "Re-ball, re-solder, dead-short hunting on the bench — no blind board swaps."],
         ["Screens & hinges", "Panel replacement for every common fitment, hinge re-builds done properly."],
         ["Keyboards & batteries", "Genuine replacements, fitted, firmware-safe."],
         ["OS & data", "Windows setup, recovery, migration — your files kept intact."]
+      ],
+      photos: [
+        { src: IMG("ro-undercounter.jpg"), alt: "Under-counter RO unit serviced by AIO-HA International" },
+        { src: IMG("ro-white-king.jpg"), alt: "White RO purifier from the AIO-HA range" }
+      ],
+      crossLinks: [
+        { href: "printers.html", label: "Printer service & toner" },
+        { href: "ro-purifiers.html", label: "RO purifier sales & AMC" }
       ],
       wa: wa("Namaste, my laptop model is ______ and the problem is ______", "laptops")
     },
@@ -373,11 +405,21 @@ window.AIOHA = (function () {
         { k: "VISITS", v: "Walk-in & on-site" },
         { k: "TONER", v: "Dealer-rate refills" }
       ],
+      pageImg: IMG("prefilter-blue-trio.jpg"),
+      pageImgAlt: "Trio of pre-filter housings — spares kept in stock",
       jobs: [
         ["Head cleaning & rebuild", "Blocked heads revived, not replaced — where the head allows."],
         ["Paper-jam surgery", "Rollers, sensors, pickup — the jam you've lived with for months."],
         ["Toner & spares", "Genuine toner and parts at wholesale/dealer rates."],
         ["Drivers & network", "Set up once, prints from every desk in the office."]
+      ],
+      photos: [
+        { src: IMG("prefilter-blue-trio.jpg"), alt: "Trio of pre-filter housings — spares kept in stock" },
+        { src: IMG("ro-undercounter.jpg"), alt: "Under-counter RO unit serviced by AIO-HA International" }
+      ],
+      crossLinks: [
+        { href: "laptops.html", label: "Laptop & computer repair" },
+        { href: "wholesale.html", label: "Wholesale spares & filters" }
       ],
       wa: wa("Namaste, my printer model is ______ and the problem is ______", "printers")
     },
@@ -411,6 +453,8 @@ window.AIOHA = (function () {
         { k: "FIT", v: "Same-week install" },
         { k: "MEDIA", v: "Regenerated on plan" }
       ],
+      pageImg: IMG("aioha-ocean.jpg"),
+      pageImgAlt: "AIO-HA Ocean unit from the shop's own range",
       jobs: [
         ["Home units", "Sized to family & bathroom count, fitted at the inlet."],
         ["Society systems", "Multi-vessel setups with maintenance contracts."],
@@ -430,11 +474,21 @@ window.AIOHA = (function () {
         { k: "FIT", v: "Ducting done right" },
         { k: "PRICE", v: "Wholesale, printed" }
       ],
+      pageImg: IMG("gas-hob-3burner.png"),
+      pageImgAlt: "Three-burner gas hob from the AIO-HA appliance range",
       jobs: [
         ["Chimney sales", "Auto-clean, filterless and baffle models — all the current lines."],
         ["Installation", "Ducting routed properly — no sagging pipes, no recirculation smell."],
         ["Deep service", "Baffle & baffle-less deep clean, motor and PCB check."],
         ["Appliances", "Hobs, cooktops and small appliances at the same trade pricing."]
+      ],
+      photos: [
+        { src: IMG("gas-hob-3burner.png"), alt: "Three-burner gas hob from the AIO-HA appliance range" },
+        { src: IMG("aioha-ocean.jpg"), alt: "AIO-HA Ocean — unit from the shop's own range" }
+      ],
+      crossLinks: [
+        { href: "water-softeners.html", label: "Water softeners" },
+        { href: "wholesale.html", label: "Wholesale appliance pricing" }
       ],
       wa: wa("Namaste, I want a chimney/appliance quote for my kitchen", "chimneys")
     },
@@ -449,13 +503,53 @@ window.AIOHA = (function () {
         { k: "STOCK", v: "RO units · spares · filters" },
         { k: "TERMS", v: "WhatsApp the list" }
       ],
+      pageImg: IMG("onyx-box-wholesale.png"),
+      pageImgAlt: "OnyX RO purifiers in wholesale cartons",
       jobs: [
         ["RO units", "House lines (OnyX · XPRIA · STARLINK) + every major brand."],
         ["Spares", "SMPS, pumps, membranes, float valves — genuine stock."],
         ["Filters", "All stages, wholesale packs, shop-ready quantities."],
         ["Appliances", "Chimneys and kitchen appliances by the carton."]
       ],
+      photos: [
+        { src: IMG("onyx-box-wholesale.png"), alt: "OnyX RO purifiers in wholesale cartons" },
+        { src: IMG("ro-max-white.png"), alt: "RO purifier models stocked at the AIO-HA wholesale counter" }
+      ],
+      crossLinks: [
+        { href: "ro-purifiers.html", label: "RO purifier service & AMC" },
+        { href: "chimneys.html", label: "Chimneys & appliances" }
+      ],
       wa: BUSINESS.waWholesale
+    },
+    contact: {
+      kicker: "(06) — CONTACT / JOB CARD",
+      title: "TELL US WHAT'S BROKEN",
+      ghost: "संपर्क",
+      lead:
+        "Walk in, call or WhatsApp. Diagnosis is free — you approve the quote before any work starts. Mon–Sat 10:00–20:00 at Budh Vihar Phase-1, near Bharat Gas Agency.",
+      stats: [
+        { k: "CALL", v: "+91 92121 60801" },
+        { k: "SHOP №", v: "+91 99901 50611" },
+        { k: "HOURS", v: "Mon–Sat 10–20" }
+      ],
+      pageImg: IMG("ro-max-white.png"),
+      pageImgAlt: "RO purifier stocked at the AIO-HA counter",
+      jobs: [
+        ["WhatsApp or call", "+91 92121 60801 — a human answers, not a bot. Average response under 45 minutes in working hours."],
+        ["Walk into the shop", "Budh Vihar Phase-1, Mangal Bazar Road, Delhi 110086 — near Bharat Gas Agency. Mon–Sat 10:00–20:00."],
+        ["Free diagnosis", "Bring the machine or book a home visit. We diagnose first, quote second — you approve before any work starts."],
+        ["90-day warranty", "Every repair leaves with a written 90-day service warranty on the work done. Job card, signed."],
+        ["Dealer / wholesale desk", "Shops and tradesmen: ask for the trade rate list — RO units, spares, filters and appliances."]
+      ],
+      photos: [
+        { src: IMG("ro-max-white.png"), alt: "RO water purifier on display at AIO-HA International, Budh Vihar" },
+        { src: IMG("prefilter-blue-trio.jpg"), alt: "Genuine RO filters and spares stocked in shop" }
+      ],
+      crossLinks: [
+        { href: "laptops.html", label: "Book a laptop repair" },
+        { href: "ro-purifiers.html", label: "Book an RO service" }
+      ],
+      wa: wa("Namaste, I have a question for AIO-HA International", "contact")
     },
     workshop: {
       kicker: "EST. 2007 — THE WORKSHOP",
@@ -468,6 +562,8 @@ window.AIOHA = (function () {
         { k: "OWNER", v: "Pradeep Kumar Sharma" },
         { k: "STANDARD", v: "Fix the cause" }
       ],
+      pageImg: IMG("aioha-classic.png"),
+      pageImgAlt: "AIO-HA Classic RO water purifier at the workshop",
       jobs: [
         ["Repair lab", "Chip-level benches for laptops, printers and RO electronics."],
         ["Wholesale counter", "RO units, filters, spares — the trade buys here."],
@@ -491,7 +587,19 @@ window.AIOHA = (function () {
         { k: "INDICATOR", v: "LCD display" },
         { k: "MOUNT", v: "Space-saving wall" }
       ],
+      pageImg: IMG("onyx-classy-copper.png"),
+      pageImgAlt: "OnyX Classy Copper wall-mount RO water purifier",
+      photo: IMG("onyx-classy-copper.png"),
+      photoAlt: "OnyX Classy Copper wall-mount RO water purifier",
+      gallery: [
+        { src: IMG("onyx-mystic-blue.jpeg"), alt: "OnyX Mystic Blue RO water purifier" },
+        { src: IMG("onyx-box-wholesale.png"), alt: "OnyX RO purifier in its wholesale carton" }
+      ],
       variants: ["onyx-blue", "onyx-copper"],
+      crossLinks: [
+        { href: "products-xpria.html", label: "XPRIA storage purifiers" },
+        { href: "products-starlink.html", label: "STARLINK slimline series" }
+      ],
       points: [
         ["LCD indicator", "Status at a glance — power, tank, service due."],
         ["Copper chamber", "The metal your grandmother insisted on, engineered in."],
@@ -511,7 +619,19 @@ window.AIOHA = (function () {
         { k: "TAP", v: "Stainless steel" },
         { k: "DISPLAY", v: "Electronic" }
       ],
+      pageImg: IMG("ro-black-copper-1.png"),
+      pageImgAlt: "XPRIA storage water purifier in black-copper finish",
+      photo: IMG("ro-black-copper-1.png"),
+      photoAlt: "XPRIA storage water purifier in black-copper finish",
+      gallery: [
+        { src: IMG("ro-black-copper-2.png"), alt: "XPRIA water purifier, second angle" },
+        { src: IMG("aioha-classic.png"), alt: "AIO-HA Classic RO water purifier with chrome tap" }
+      ],
       variants: ["xpria"],
+      crossLinks: [
+        { href: "products-onyx.html", label: "OnyX zinc-copper-alkaline series" },
+        { href: "ro-purifiers.html", label: "RO service, filters & AMC" }
+      ],
       points: [
         ["Storage tank", "Water ready when the power is not."],
         ["Electronic display", "Clean, readable, service-honest."],
@@ -531,7 +651,19 @@ window.AIOHA = (function () {
         { k: "POWER", v: "24 / 36 / 48 W" },
         { k: "BODY", v: "419 × 241 × 568 mm · 12 kg" }
       ],
+      pageImg: IMG("starlink-rose-gold.png"),
+      pageImgAlt: "STARLINK slimline RO water purifier in rose gold",
+      photo: IMG("starlink-rose-gold.png"),
+      photoAlt: "STARLINK slimline RO water purifier in rose gold",
+      gallery: [
+        { src: IMG("starlink-green.jpeg"), alt: "STARLINK slimline RO water purifier in green" },
+        { src: IMG("ro-white-king.jpg"), alt: "Slim white RO water purifier on display" }
+      ],
       variants: ["starlink-rose"],
+      crossLinks: [
+        { href: "products-onyx.html", label: "OnyX zinc-copper-alkaline series" },
+        { href: "products-xpria.html", label: "XPRIA storage purifiers" }
+      ],
       points: [
         ["Slimline body", "The narrowest wall footprint in our lineup."],
         ["Four colourways", "Rose Gold for the show kitchen, Cherry for the back one."],
@@ -560,6 +692,7 @@ window.AIOHA = (function () {
     MARQUEE: MARQUEE,
     PAGES: PAGES,
     PRODUCT_PAGES: PRODUCT_PAGES,
+    SHOP_PHOTOS: SHOP_PHOTOS,
     PAGE_DEFAULTS: PAGE_DEFAULTS,
     FOOTER: FOOTER,
     wa: wa

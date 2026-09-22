@@ -54,6 +54,15 @@
       '<path d="M50 56 h24 M98 44 h24 M146 56 h24" stroke="var(--mask)" stroke-width="1.2"/></svg>'
   };
 
+  function renderShopStrip() {
+    var host = document.getElementById("shopPhotos");
+    if (!host || !window.__photoFrame || !window.AIOHA || !window.AIOHA.SHOP_PHOTOS) return;
+    host.innerHTML = window.AIOHA.SHOP_PHOTOS.map(function (p, i) {
+      var label = i === 0 ? "AIO-HA INTERNATIONAL — SHOP FRONT" : "INSIDE THE WORKSHOP";
+      return window.__photoFrame(p.src, p.alt, label, false);
+    }).join("");
+  }
+
   function renderServices() {
     var track = document.getElementById("hspecTrack");
     if (!track) return;
@@ -191,7 +200,12 @@
     var wipe = document.getElementById("labWipe");
 
     if (!product) return;
-    product.innerHTML = window.__purifierSVG();
+    /* real photo of the product; falls back to a styled name plate on 404 */
+    if (window.__photoFrame) {
+      product.innerHTML = window.__photoFrame(D.PRODUCTS[0].img, D.PRODUCTS[0].alt, D.PRODUCTS[0].name, true);
+    } else {
+      product.innerHTML = window.__purifierSVG();
+    }
 
     var current = -1;
 
@@ -204,6 +218,9 @@
       brand.textContent = p.brand;
       name.textContent = p.hindi + " — " + p.name;
       index.textContent = String(i + 1).padStart(2, "0") + " / " + String(D.PRODUCTS.length).padStart(2, "0");
+      if (window.__photoFrame) {
+        product.innerHTML = window.__photoFrame(p.img, p.alt, p.name, i === 0);
+      }
       finish.innerHTML = "FINISH — <b>" + p.finish + "</b>";
       type.innerHTML = "TYPE — <b>" + p.type + "</b>";
       specLine.innerHTML = "SPEC — <b>" + p.spec + "</b>";
@@ -216,6 +233,11 @@
       qsa(".lab__swatch", swatches).forEach(function (b, bi) {
         b.classList.toggle("is-active", bi === i);
       });
+      var labPage = document.getElementById("labPage");
+      if (labPage) {
+        labPage.href = window.AIOHA_ROOT + "pages/products-" + (p.id.indexOf("onyx") === 0 ? "onyx" : p.id) + ".html";
+        labPage.style.display = "inline-flex";
+      }
 
       if (REDUCED || !animate || prev === -1) {
         apply(p, 0);
@@ -346,6 +368,7 @@
      ====================================================================== */
   window.__initHome = function () {
     renderServices();
+    renderShopStrip();
     renderProcess();
     /* Color Lab renders its static step-0 state even with reduced motion */
     initColorLab();

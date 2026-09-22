@@ -5,6 +5,16 @@
   "description": "AIO-HA International — SCHEMATIC (paper & PCB) marketing site. Static, zero build step. All content lives in assets/js/data.js.",
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "start": "python3 -m http.server 4173"
+    "start": "python3 -m http.server 4173",
+    "build:pages": "node scripts/build-pages.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:images": "node scripts/img-probe.mjs",
+    "test": "node scripts/smoke-test.mjs",
+    "test:reduced": "node scripts/smoke-test.mjs --reduced",
+    "img:compress": "bun scripts/img-compress.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1",
+    "sharp": "^0.35.4"
   }
 }

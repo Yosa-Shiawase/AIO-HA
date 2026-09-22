@@ -12,7 +12,7 @@ const REDUCED = process.argv.includes("--reduced");
 const pageArgs = process.argv.slice(2).filter((a) => a !== "--reduced");
 const pages = pageArgs.length
   ? pageArgs
-  : ["index.html", "pages/laptops.html", "pages/printers.html", "pages/ro-purifiers.html", "pages/water-softeners.html", "pages/chimneys.html", "pages/wholesale.html", "pages/workshop.html", "pages/products-onyx.html", "pages/products-xpria.html", "pages/products-starlink.html"];
+  : ["index.html", "pages/laptops.html", "pages/printers.html", "pages/ro-purifiers.html", "pages/water-softeners.html", "pages/chimneys.html", "pages/wholesale.html", "pages/workshop.html", "pages/contact.html", "pages/products-onyx.html", "pages/products-xpria.html", "pages/products-starlink.html"];
 
 const polyfills = `
   window.matchMedia = window.matchMedia || function (q) {
@@ -93,8 +93,9 @@ for (const rel of pages) {
     checks["service panels"] = doc.querySelectorAll(".hspec__panel").length === 6;
     checks["process steps"] = doc.querySelectorAll(".process__step").length === 4;
     checks["review cards"] = doc.querySelectorAll(".review").length === 8;
-    checks["color lab product"] = !!doc.querySelector("#labProduct svg");
+    checks["color lab product"] = !!doc.querySelector("#labProduct .pframe, #labProduct svg");
     checks["lab steps"] = doc.querySelectorAll(".lab__step").length === 4;
+    checks["shop photo frames"] = doc.querySelectorAll("#shopPhotos .pframe").length === 2;
   } else {
     checks["dossier title"] = (doc.querySelector(".dossier__title") || {}).textContent > "";
     checks["dossier meta"] = doc.querySelectorAll(".dossier__meta div").length >= 3;

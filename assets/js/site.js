@@ -53,6 +53,76 @@
   window.__purifierSVG = purifierSVG;
 
   /* ======================================================================
+     0b. LOCAL IMAGES + JSON-LD
+     ====================================================================== */
+  /* Root-prefix data.js image paths so the same data serves / and /pages/ */
+  function img(p) {
+    return p ? ROOT + p : "";
+  }
+  window.AIOHA_IMG = img;
+
+  /* Product/shop photo frames degrade to a styled name plate on 404 —
+     never a blank box. The inline onerror works even if this script dies. */
+  function photoFrame(src, alt, label, eager) {
+    return (
+      '<span class="pframe" data-img>' +
+        '<img src="' + img(src) + '" alt="' + esc(alt || label || "") + '" ' +
+          'loading="' + (eager ? "eager" : "lazy") + '" decoding="async" ' +
+          'width="600" height="800" ' +
+          'onerror="this.closest(\'.pframe\').classList.add(\'is-missing\');this.remove()">' +
+        '<span class="pframe__fallback" aria-hidden="true">' + esc(label || alt || "AIO-HA") + "</span>" +
+      "</span>"
+    );
+  }
+  window.__photoFrame = photoFrame;
+
+  /* LocalBusiness JSON-LD shared by the landing page (static in HTML) and
+     inner pages (filled into #page-jsonld by page.js after build()). */
+  function baseJsonLd() {
+    var B = D.BUSINESS;
+    return {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      name: B.name,
+      description: "Electronics and home appliance repair plus wholesale. Chip-level laptop repair, printer service, RO water purifier sales, installation and AMC, water softeners, kitchen chimneys at wholesale rates.",
+      telephone: B.phoneTel,
+      foundingDate: String(B.established),
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Budh Vihar Phase-1, Mangal Bazar Road (Near Bharat Gas Agency)",
+        addressLocality: "Budh Vihar",
+        addressRegion: "Delhi",
+        postalCode: B.address.pincode,
+        addressCountry: "IN"
+      },
+      geo: { "@type": "GeoCoordinates", latitude: B.address.geo.lat, longitude: B.address.geo.lng },
+      openingHoursSpecification: [{
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        opens: "10:00",
+        closes: "20:00"
+      }],
+      priceRange: "\u20B9\u20B9"
+    };
+  }
+  window.__pageJsonLd = function (page) {
+    if (!page) return null;
+    var data = baseJsonLd();
+    if (page.pageImg) {
+      data.image = location.origin + "/" + img(page.pageImg).replace(/^\//, "");
+    }
+    return data;
+  };
+  window.__wirePageJsonLd = function () {
+    var s = document.getElementById("page-jsonld");
+    if (!s) return;
+    var PAGE_KEY = document.body.dataset.page;
+    var page = D.PRODUCT_PAGES[PAGE_KEY] || D.PAGES[PAGE_KEY];
+    var data = window.__pageJsonLd(page);
+    if (data) s.textContent = JSON.stringify(data);
+  };
+
+  /* ======================================================================
      1. RENDER NAV (desktop + drawer)
      ====================================================================== */
   function renderHeader() {
@@ -405,6 +475,23 @@
     renderClock();
     wireJobCard();
     wireWAButtons();
+
+    /* force-reveal: if an error interrupts the motion code, nothing may stay
+       hidden. Also clears a stuck preloader. */
+    window.__forceReveal = function () {
+      qsa(".rv").forEach(function (el) {
+        el.style.opacity = "1";
+        el.style.transform = "none";
+      });
+      var pre = qs("#preloader");
+      if (pre) {
+        pre.style.display = "none";
+        document.body.classList.remove("is-loading");
+      }
+    };
+    window.addEventListener("error", function () {
+      setTimeout(window.__forceReveal, 150);
+    });
   }
 
   /* ======================================================================
@@ -452,21 +539,15 @@
     if (REDUCED) return;
 
     qsa(".rv").forEach(function (el) {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
+      /* gsap.from: the CSS state is always visible; JS animates FROM hidden.
+         If JS never runs, content is simply there. */
+      gsap.from(el, {
+        opacity: 0,
+        y: 26,
         duration: 0.9,
         ease: "expo.out",
+        clearProps: "all",
         scrollTrigger: { trigger: el, start: "top 88%", once: true }
-      });
-    });
-
-    /* image parallax inside frames */
-    qsa(".pframe img").forEach(function (img) {
-      gsap.fromTo(img, { yPercent: -12 }, {
-        yPercent: 12,
-        ease: "none",
-        scrollTrigger: { trigger: img.closest(".pframe"), start: "top bottom", end: "bottom top", scrub: true }
       });
     });
 
@@ -505,16 +586,31 @@
   }
 
   /* ======================================================================
-     8. REVIEWS — Embla
+     8. REVIEWS — Embla enhances desktop; mobile keeps a native swipe row.
      ====================================================================== */
   function initEmbla() {
     var vp = qs(".reviews__viewport");
-    if (!vp || typeof EmblaCarousel !== "function") return;
+    if (!vp) return;
+
+    /* touch phones / small screens: native overflow scroll + snap (CSS).
+       Arrow buttons simply scroll the row. */
+    if (TOUCH || window.innerWidth <= 820 || REDUCED) {
+      var scrollRow = function (dir) {
+        vp.scrollBy({ left: dir * vp.clientWidth * 0.85, behavior: "smooth" });
+      };
+      var p2 = qs("[data-embla-prev]");
+      var n2 = qs("[data-embla-next]");
+      if (p2) p2.addEventListener("click", function () { scrollRow(-1); });
+      if (n2) n2.addEventListener("click", function () { scrollRow(1); });
+      return;
+    }
+
+    if (typeof EmblaCarousel !== "function") return;
     var embla = EmblaCarousel(vp, {
-      loop: true,
       align: "start",
-      dragFree: false,
-      containsScroll: false
+      loop: false,
+      dragFree: true,
+      containsScroll: true
     });
     vp.addEventListener("pointerdown", function () { vp.classList.add("is-dragging"); });
     window.addEventListener("pointerup", function () { vp.classList.remove("is-dragging"); });
@@ -588,6 +684,7 @@
     renderReviews();
     wireWAButtons();
     initCore();
+    if (document.body.dataset.page !== "home") window.__wirePageJsonLd();
 
     var after = function () {
       if (window.__initHome) window.__initHome();

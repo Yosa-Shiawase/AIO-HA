@@ -35,6 +35,8 @@
       '<svg viewBox="0 0 220 120" fill="none" stroke="var(--ink)" stroke-width="1.5"><path d="M60 34 h100 l-12 22 H72 Z"/><path d="M96 56 v14 M124 56 v14"/><rect x="76" y="70" width="68" height="26"/><path d="M110 22 v12 M110 16 l-4 6 h8 Z" stroke="var(--mask)" stroke-width="1.2"/></svg>',
     wholesale:
       '<svg viewBox="0 0 220 120" fill="none" stroke="var(--ink)" stroke-width="1.5"><rect x="42" y="46" width="40" height="40"/><rect x="90" y="34" width="40" height="52"/><rect x="138" y="46" width="40" height="40"/><path d="M42 66 H178" stroke="var(--copper)" stroke-width="1"/></svg>',
+    contact:
+      '<svg viewBox="0 0 220 120" fill="none" stroke="var(--ink)" stroke-width="1.5"><rect x="56" y="14" width="108" height="92"/><path d="M56 34 h108 M76 14 v20" stroke="var(--copper)" stroke-width="1"/><rect x="66" y="44" width="88" height="22" stroke="var(--mask)"/><path d="M66 78 h56 M66 90 h36" /></svg>',
     workshop:
       '<svg viewBox="0 0 220 120" fill="none" stroke="var(--ink)" stroke-width="1.5"><path d="M40 96 H180 M50 96 V56 h36 v40 M104 96 V40 h30 v56 M150 96 V66 h22 v30"/><path d="M58 66 h20 M114 52 h12" stroke="var(--mask)" stroke-width="1.2"/><path d="M160 52 l6 -8 6 8" stroke="var(--copper)" stroke-width="1.2"/></svg>',
     "products-onyx":
@@ -44,6 +46,13 @@
     "products-starlink":
       '<svg viewBox="0 0 220 120" fill="none" stroke="var(--ink)" stroke-width="1.5"><rect x="88" y="8" width="44" height="104" rx="3"/><rect x="96" y="16" width="28" height="10" stroke="var(--mask)"/><path d="M88 34 h44 M110 46 c8 6 8 16 0 22 c-8 -6 -8 -16 0 -22" stroke="var(--copper)" stroke-width="1.2"/></svg>'
   };
+
+  function photo(photoObj, label, eager, klass) {
+    if (!window.__photoFrame || !photoObj) return "";
+    /* PRODUCTS entries carry img/alt; PAGES entries carry src/alt */
+    var o = photoObj.src ? photoObj : { src: photoObj.img, alt: photoObj.alt };
+    return window.__photoFrame(o.src, o.alt, label, eager, klass);
+  }
 
   function build() {
     var isProduct = PAGE_KEY.indexOf("products-") === 0;
@@ -72,6 +81,15 @@
       })
       .join("");
 
+    /* hero photo for this page (real product/shop photo when available) */
+    var heroHtml = "";
+    if (page.pageImg) {
+      heroHtml =
+        '<section class="sheet wrap"><div class="pagephoto">' +
+        photo({ src: page.pageImg, alt: page.pageImgAlt }, page.title, true, "pagephoto__frame") +
+        "</div></section>";
+    }
+
     /* body: job list (services) or points (products) */
     var rows = page.jobs || page.points || [];
     var html = "";
@@ -88,6 +106,14 @@
       html += "</dl></section>";
     }
 
+    /* in-store photo strip (2 shop photos, or 2 product angles/finishes) */
+    if (page.photos && page.photos.length) {
+      html += '<section class="sheet wrap"><h2 class="display sheet__title">FROM THE BENCH — IN STORE</h2>' +
+        '<div class="photogrid">' +
+        page.photos.map(function (p) { return photo(p, page.title, false); }).join("") +
+        "</div></section>";
+    }
+
     /* product lineup on the RO page (three house lines) */
     if (PAGE_KEY === "ro-purifiers" && typeof window.__purifierSVG === "function") {
       html += '<section class="sheet sheet--alt"><div class="wrap">' +
@@ -99,31 +125,32 @@
               '<span class="lineup__brand">' + esc(p.brand) + " · " + esc(p.finish.split(" (")[0]) + "</span>" +
               '<h3 class="lineup__name">' + esc(p.name) + "</h3>" +
               '<span class="lineup__hindi">' + esc(p.hindi) + "</span>" +
-              '<div class="lineup__art">' + window.__purifierSVG() + "</div>" +
+              '<div class="lineup__art">' + photo(p, p.name, false) + "</div>" +
               '<p class="lineup__spec"><span>TYPE — <b>' + esc(p.type) + "</b></span>" +
               "<span>SPEC — <b>" + esc(p.spec) + "</b></span></p>" +
               '<a class="btn magnetic lineup__cta" target="_blank" rel="noopener" href="' +
                 D.wa("Namaste, I want the price of " + p.name, "lineup") + '">' +
                 '<span class="btn__fill"></span><span class="btn__txt">ASK PRICE</span></a>' +
+              '<a class="lineup__more mono" href="' + window.AIOHA_ROOT + pageHrefForProduct(p.id) + '">FULL SPEC →</a>' +
             "</article>"
           );
         }).join("") +
         "</div></div></section>";
     }
 
-    /* product pages: variant strip rendered from PRODUCTS */
+    /* product pages: photo + variant strip rendered from PRODUCTS */
     if (isProduct && page.variants) {
       var items = D.PRODUCTS.filter(function (p) { return page.variants.indexOf(p.id) > -1; });
       if (items.length) {
         html += '<section class="sheet sheet--alt"><div class="wrap">' +
-          '<h2 class="display sheet__title">THE FINISHES</h2><div class="lineup">' +
+          '<h2 class="display sheet__title">THE FINISHES</h2><div class="lineup lineup--2col">' +
           items.map(function (p) {
             return (
               '<article class="lineup__card">' +
                 '<span class="lineup__brand">' + esc(p.brand) + "</span>" +
                 '<h3 class="lineup__name">' + esc(p.name) + "</h3>" +
                 '<span class="lineup__hindi">' + esc(p.hindi) + "</span>" +
-                '<div class="lineup__art">' + window.__purifierSVG() + "</div>" +
+                '<div class="lineup__art">' + photo(p, p.name, false) + "</div>" +
                 '<p class="lineup__spec"><span>FINISH — <b>' + esc(p.finish) + "</b></span>" +
                 "<span>TYPE — <b>" + esc(p.type) + "</b></span></p>" +
                 '<a class="btn magnetic lineup__cta" target="_blank" rel="noopener" href="' +
@@ -134,6 +161,30 @@
           }).join("") +
           "</div></div></section>";
       }
+    }
+
+    /* product pages: wholesale CTA (original brief) */
+    if (isProduct) {
+      html +=
+        '<section class="ctaband ctaband--ink"><div class="wrap ctaband__in">' +
+          '<h2 class="display ctaband__title">Dealer? Ask the wholesale rate on WhatsApp.</h2>' +
+          '<a class="btn btn--lg magnetic" target="_blank" rel="noopener" href="' + D.BUSINESS.waWholesale + '">' +
+            '<span class="btn__fill"></span><span class="btn__txt">ASK WHOLESALE RATE →</span></a>' +
+        "</div></section>";
+    }
+
+    /* cross-links — every inner page points to two neighbours */
+    if (page.crossLinks && page.crossLinks.length) {
+      html +=
+        '<section class="sheet wrap"><h2 class="display sheet__title">ALSO ON THE BENCH</h2><div class="xlinks">' +
+        page.crossLinks.map(function (l) {
+          return (
+            '<a class="xlink" href="' + window.AIOHA_ROOT + "pages/" + esc(l.href) + '">' +
+              "<span>" + esc(l.label) + "</span><b>→</b>" +
+            "</a>"
+          );
+        }).join("") +
+        "</div></section>";
     }
 
     /* CTA band */
@@ -148,14 +199,22 @@
         "</div>" +
       "</div></section>";
 
-    mount.innerHTML = html;
+    mount.innerHTML = heroHtml + html;
+  }
+
+  /* OnyX/XPRIA/STARLINK lineup cards deep-link to their product pages */
+  function pageHrefForProduct(id) {
+    if (id.indexOf("onyx") === 0) return "products-onyx.html";
+    if (id === "xpria") return "products-xpria.html";
+    if (id.indexOf("starlink") === 0) return "products-starlink.html";
+    return "wholesale.html";
   }
 
   /* inner-page motion ------------------------------------------------------ */
   function motion() {
     if (REDUCED) return;
 
-    /* dossier title rise (no mask on inner pages — fade+rise) */
+    /* dossier title rise (gsap.from — visible by default if JS dies) */
     var title = document.querySelector(".dossier__title");
     if (title && window.SplitType && window.gsap) {
       var split = new SplitType(title, { types: "lines,words" });
@@ -165,7 +224,8 @@
         duration: 0.7,
         ease: "expo.out",
         stagger: 0.04,
-        delay: 0.2
+        delay: 0.2,
+        clearProps: "all"
       });
     }
 
